@@ -30,7 +30,7 @@ Build a GA4 funnel analytics workflow that can:
 - Estimate conversion and revenue opportunity using transparent counterfactual benchmarks.
 - Evaluate experiment feasibility using baseline conversion rate, MDE, statistical power, required sample size, and estimated test duration.
 - Generate an executive memo from a structured `metric_evidence_packet.json` using a local `MockProvider`, without calling live LLM APIs.
-- Support a Tableau dashboard for marketing stakeholders.
+- Support Tableau dashboard workflows through generated CSV extracts, optional Hyper extract creation, and optional Tableau Cloud/Server publishing.
 
 ## What Makes This AI-Assisted
 
@@ -76,14 +76,17 @@ Any executive memo, Tableau annotation, business recommendation, or experiment d
 
 This project intentionally avoids live commercial APIs for the AI layer. Memo generation uses `MockProvider` only. In a production environment, the provider interface could be swapped for a real LLM API, but this portfolio version remains local, reproducible, and evidence-constrained.
 
+Tableau publishing is optional and explicit. The Tableau publisher defaults to dry-run mode and requires `--confirm-live-api` before it contacts Tableau Cloud or Tableau Server.
+
 ## Planned Workflow
 
 1. Extract GA4 event and session metrics with BigQuery SQL.
 2. Use the Google public dataset as the initial source of truth.
 3. Use Python to generate `metric_evidence_packet.json`.
 4. Use `MockProvider` to draft an executive memo from the evidence packet.
-5. Build a Tableau dashboard from the same metric outputs.
-6. Document recommendations only when they are supported by the evidence packet.
+5. Build Tableau-ready CSV files and, optionally, a Tableau Hyper extract from the same metric outputs.
+6. Publish a datasource or workbook template to Tableau Cloud/Server only when the user explicitly provides credentials and confirms the live API call.
+7. Document recommendations only when they are supported by the evidence packet.
 
 ## BigQuery Starting Point
 
@@ -103,6 +106,12 @@ For command-line steps, see:
 
 ```text
 ai_workflow/bigquery_runbook.md
+```
+
+For Tableau automation steps, see:
+
+```text
+tableau/automation.md
 ```
 
 ## GitHub Timing

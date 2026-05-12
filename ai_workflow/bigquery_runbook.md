@@ -92,6 +92,7 @@ Build the packet and memo:
 ```bash
 python src/build_metric_evidence_packet.py
 python src/mock_provider.py
+python src/build_tableau_exports.py
 ```
 
 Outputs:
@@ -99,6 +100,36 @@ Outputs:
 ```text
 outputs/metric_evidence_packet.json
 outputs/executive_memo.md
+tableau/funnel_overview.csv
+tableau/segment_opportunity.csv
+tableau/experiment_feasibility.csv
+tableau/kpi_summary.csv
+```
+
+## Optional Tableau Automation
+
+Install optional Tableau dependencies:
+
+```bash
+pip install -r requirements-tableau.txt
+```
+
+Build a Tableau Hyper extract:
+
+```bash
+python src/build_tableau_hyper.py
+```
+
+Validate Tableau publishing configuration without calling Tableau:
+
+```bash
+python src/publish_tableau.py
+```
+
+For live publishing, see:
+
+```text
+tableau/automation.md
 ```
 
 ## Rule

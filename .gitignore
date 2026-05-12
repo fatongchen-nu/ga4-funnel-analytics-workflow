@@ -15,6 +15,7 @@ outputs/*.md
 tableau/*.twbx
 tableau/*.twb
 tableau/*.hyper
+tableau/*.csv
 
 # Keep documentation placeholders
 !data/.gitkeep
