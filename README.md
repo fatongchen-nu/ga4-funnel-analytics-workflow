@@ -88,6 +88,26 @@ Tableau publishing is optional and explicit. The Tableau publisher defaults to d
 6. Publish a datasource or workbook template to Tableau Cloud/Server only when the user explicitly provides credentials and confirms the live API call.
 7. Document recommendations only when they are supported by the evidence packet.
 
+## Current Portfolio Outputs
+
+The current deterministic run identifies `view_item_to_add_to_cart` as the largest funnel drop-off and `google / organic / desktop` as the highest estimated revenue opportunity segment. The experiment feasibility estimate returns a long test duration under the default 10% relative lift assumption because the selected segment has limited eligible checkout traffic. This should be interpreted as a traffic sufficiency warning, not a launch-ready A/B test recommendation.
+
+Recommended next step for experimentation: expand the eligible population, combine similar segments, choose a larger practical effect size, or use a quasi-experimental design before committing to a randomized test.
+
+## Tableau Workbook Status
+
+The repository now generates Tableau-ready CSV files and an optional Hyper extract. A finished portfolio version should also include a real Tableau workbook export:
+
+```text
+tableau/ga4_funnel_dashboard.twbx
+```
+
+The workbook should be created in Tableau Public or Tableau Desktop from the generated files, then committed to the repository. See:
+
+```text
+tableau/workbook_manifest.md
+```
+
 ## BigQuery Starting Point
 
 Use this first query to confirm access and data coverage:

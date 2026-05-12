@@ -27,7 +27,9 @@
     "power": null,
     "required_sample_per_variant": null,
     "daily_eligible_users": null,
-    "estimated_test_duration_days": null
+    "estimated_test_duration_days": null,
+    "feasibility_interpretation": null,
+    "recommended_next_step": null
   },
   "qa": {
     "metric_definitions_reviewed": false,
@@ -36,4 +38,3 @@
     "notes": []
   }
 }
-

@@ -12,8 +12,6 @@ outputs/*.json
 outputs/*.md
 
 # Tableau local artifacts
-tableau/*.twbx
-tableau/*.twb
 tableau/*.hyper
 tableau/*.csv
 

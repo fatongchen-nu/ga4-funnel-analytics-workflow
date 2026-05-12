@@ -47,6 +47,8 @@ def empty_metric_evidence_packet() -> dict[str, Any]:
             "required_sample_per_variant": None,
             "daily_eligible_users": None,
             "estimated_test_duration_days": None,
+            "feasibility_interpretation": None,
+            "recommended_next_step": None,
         },
         "qa": {
             "metric_definitions_reviewed": False,
@@ -187,11 +189,30 @@ def build_experiment_section(
         return empty_metric_evidence_packet()["experiment_feasibility"]
 
     daily_eligible_users = max(1, math.ceil(begin_checkout_sessions / day_count))
-    return assess_experiment_feasibility(
+    experiment = assess_experiment_feasibility(
         baseline_conversion_rate=baseline,
         mde_relative_lift=mde_relative_lift,
         daily_eligible_users=daily_eligible_users,
     )
+    estimated_days = experiment["estimated_test_duration_days"]
+    if estimated_days is not None and estimated_days > 90:
+        experiment["feasibility_interpretation"] = (
+            "The estimated test duration is long because the selected opportunity segment has limited "
+            "eligible checkout traffic. Treat this as a traffic sufficiency warning, not as a launch-ready "
+            "A/B test recommendation."
+        )
+        experiment["recommended_next_step"] = (
+            "Expand the eligible population, combine similar segments, choose a larger practical effect size, "
+            "or use a quasi-experimental design before committing to a randomized test."
+        )
+    else:
+        experiment["feasibility_interpretation"] = (
+            "The estimated test duration appears operationally feasible under the current planning assumptions."
+        )
+        experiment["recommended_next_step"] = (
+            "Validate implementation effort, guardrail metrics, and tracking quality before launch."
+        )
+    return experiment
 
 
 def build_metric_evidence_packet(
@@ -238,6 +259,7 @@ def build_metric_evidence_packet(
                 "Public GA4 sample data is obfuscated; null, empty, or placeholder traffic fields may appear.",
                 "Experiment feasibility uses checkout entrants for the selected opportunity segment as the eligible population.",
                 f"MDE relative lift is an analyst-configured planning assumption: {mde_relative_lift}.",
+                "Long estimated test durations should be interpreted as traffic sufficiency warnings rather than launch-ready experiment recommendations.",
             ],
         },
     }

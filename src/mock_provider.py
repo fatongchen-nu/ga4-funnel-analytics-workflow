@@ -34,6 +34,8 @@ class MockProvider:
             f"- MDE relative lift: {self._field('experiment_feasibility', experiment, 'mde_relative_lift')}",
             f"- Required sample per variant: {self._field('experiment_feasibility', experiment, 'required_sample_per_variant')}",
             f"- Estimated test duration days: {self._field('experiment_feasibility', experiment, 'estimated_test_duration_days')}",
+            f"- Feasibility interpretation: {self._field('experiment_feasibility', experiment, 'feasibility_interpretation')}",
+            f"- Recommended next step: {self._field('experiment_feasibility', experiment, 'recommended_next_step')}",
             "",
             "## Recommendation",
             self._recommendation(opportunity, experiment),
@@ -58,6 +60,8 @@ class MockProvider:
             for key in (
                 "required_sample_per_variant",
                 "estimated_test_duration_days",
+                "feasibility_interpretation",
+                "recommended_next_step",
             )
             if experiment.get(key) is None
         ]
@@ -65,8 +69,8 @@ class MockProvider:
             return "No recommendation is available because these evidence fields are missing: " + ", ".join(missing)
 
         return (
-            "Prioritize this opportunity for stakeholder review, then validate whether the estimated "
-            "test duration and sample requirements are operationally feasible before launching an A/B test."
+            "Prioritize this opportunity for stakeholder review, but do not treat the current A/B test sizing "
+            "as launch-ready until the traffic sufficiency issue has been resolved."
         )
 
     def _field(self, section_name: str, section: dict[str, Any], key: str) -> str:

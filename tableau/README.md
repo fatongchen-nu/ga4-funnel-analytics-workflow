@@ -27,6 +27,12 @@ For Hyper extract generation and Tableau Cloud/Server publishing, see:
 tableau/automation.md
 ```
 
+For the expected portfolio workbook deliverable, see:
+
+```text
+tableau/workbook_manifest.md
+```
+
 ## Planned Views
 
 1. Funnel Overview
