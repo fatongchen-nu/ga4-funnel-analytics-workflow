@@ -1,0 +1,39 @@
+{
+  "project": {
+    "analysis_period_label": null,
+    "data_source": "GA4 BigQuery export",
+    "generated_by": "SQL/Python"
+  },
+  "funnel": {
+    "funnel_steps": [],
+    "top_dropoff_step": null,
+    "top_dropoff_rate": null
+  },
+  "opportunity": {
+    "segment_name": null,
+    "eligible_sessions": null,
+    "segment_conversion_rate": null,
+    "benchmark_name": null,
+    "benchmark_conversion_rate": null,
+    "conversion_rate_gap": null,
+    "average_order_value": null,
+    "estimated_missed_conversions": null,
+    "estimated_revenue_opportunity": null
+  },
+  "experiment_feasibility": {
+    "baseline_conversion_rate": null,
+    "mde_relative_lift": null,
+    "alpha": null,
+    "power": null,
+    "required_sample_per_variant": null,
+    "daily_eligible_users": null,
+    "estimated_test_duration_days": null
+  },
+  "qa": {
+    "metric_definitions_reviewed": false,
+    "ga4_event_taxonomy_reviewed": false,
+    "utm_channel_grouping_reviewed": false,
+    "notes": []
+  }
+}
+

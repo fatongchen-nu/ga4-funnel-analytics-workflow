@@ -1,0 +1,22 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Local data and generated outputs
+data/*.csv
+data/*.json
+outputs/*.json
+outputs/*.md
+
+# Tableau local artifacts
+tableau/*.twbx
+tableau/*.twb
+tableau/*.hyper
+
+# Keep documentation placeholders
+!data/.gitkeep
+!outputs/.gitkeep
+!tableau/README.md
