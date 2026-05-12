@@ -31,6 +31,7 @@ Build a GA4 funnel analytics workflow that can:
 - Evaluate experiment feasibility using baseline conversion rate, MDE, statistical power, required sample size, and estimated test duration.
 - Generate an executive memo from a structured `metric_evidence_packet.json` using a local `MockProvider`, without calling live LLM APIs.
 - Support Tableau dashboard workflows through generated CSV extracts, optional Hyper extract creation, and optional Tableau Cloud/Server publishing.
+- Generate a self-contained interactive HTML dashboard for immediate portfolio review without Tableau or live APIs.
 
 ## What Makes This AI-Assisted
 
@@ -85,8 +86,9 @@ Tableau publishing is optional and explicit. The Tableau publisher defaults to d
 3. Use Python to generate `metric_evidence_packet.json`.
 4. Use `MockProvider` to draft an executive memo from the evidence packet.
 5. Build Tableau-ready CSV files and, optionally, a Tableau Hyper extract from the same metric outputs.
-6. Publish a datasource or workbook template to Tableau Cloud/Server only when the user explicitly provides credentials and confirms the live API call.
-7. Document recommendations only when they are supported by the evidence packet.
+6. Build a self-contained HTML dashboard for immediate review.
+7. Publish a datasource or workbook template to Tableau Cloud/Server only when the user explicitly provides credentials and confirms the live API call.
+8. Document recommendations only when they are supported by the evidence packet.
 
 ## Current Portfolio Outputs
 
@@ -142,6 +144,12 @@ For Tableau automation steps, see:
 
 ```text
 tableau/automation.md
+```
+
+For the local interactive HTML dashboard, see:
+
+```text
+dashboard/index.html
 ```
 
 ## GitHub Timing

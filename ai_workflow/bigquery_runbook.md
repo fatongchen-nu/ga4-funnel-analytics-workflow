@@ -93,6 +93,7 @@ Build the packet and memo:
 python src/build_metric_evidence_packet.py
 python src/mock_provider.py
 python src/build_tableau_exports.py
+python src/build_html_dashboard.py
 ```
 
 Outputs:
@@ -104,6 +105,7 @@ tableau/funnel_overview.csv
 tableau/segment_opportunity.csv
 tableau/experiment_feasibility.csv
 tableau/kpi_summary.csv
+dashboard/index.html
 ```
 
 ## Optional Tableau Automation

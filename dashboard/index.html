@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GA4 Funnel Analytics Dashboard</title>
+  <style>
+    :root {
+      --bg: #f6f5f1;
+      --panel: #ffffff;
+      --ink: #181b1f;
+      --muted: #626b76;
+      --line: #d9ddd8;
+      --teal: #007c89;
+      --green: #4f8a5b;
+      --amber: #c57b18;
+      --red: #c4493d;
+      --violet: #6d5bd0;
+      --shadow: 0 16px 44px rgba(31, 35, 39, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      background: #eeede7;
+      overflow: auto;
+    }
+
+    main {
+      min-width: 0;
+      padding: 28px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+      font-weight: 800;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 980px;
+      font-size: clamp(32px, 5vw, 66px);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    h3 {
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+      margin: 22px 0;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+
+    .nav a:hover {
+      background: rgba(0, 124, 137, 0.10);
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .controls {
+      display: grid;
+      gap: 14px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    input[type="search"], select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      color: var(--ink);
+      padding: 8px 10px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--teal);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .toggle-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--teal);
+    }
+
+    .hero {
+      display: grid;
+      gap: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.76);
+      padding: 6px 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .section {
+      padding: 26px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .kpis {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .two-col {
+      grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .panel-pad {
+      padding: 18px;
+    }
+
+    .kpi {
+      display: grid;
+      gap: 12px;
+      min-height: 136px;
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      line-height: 1.05;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .badge {
+      padding: 4px 7px;
+      border-radius: 8px;
+      font-size: 11px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: #fafafa;
+      white-space: nowrap;
+    }
+
+    .funnel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .funnel-row {
+      display: grid;
+      grid-template-columns: 130px minmax(0, 1fr) 92px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bar-track {
+      position: relative;
+      height: 42px;
+      border-radius: 8px;
+      background: #ecefea;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      min-width: 2px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--teal), var(--green));
+      transition: width 240ms ease, filter 180ms ease;
+    }
+
+    .bar-track:hover .bar-fill {
+      filter: brightness(0.92);
+    }
+
+    .dropoff {
+      color: var(--red);
+      font-weight: 740;
+      text-align: right;
+    }
+
+    .insight {
+      border-left: 4px solid var(--amber);
+      background: #fff8ee;
+      padding: 16px;
+      border-radius: 8px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .opportunity-list {
+      display: grid;
+      gap: 10px;
+      max-height: 596px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .segment-row {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .segment-row.active {
+      border-color: var(--teal);
+      box-shadow: inset 0 0 0 1px var(--teal);
+    }
+
+    .segment-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .mini-bar {
+      height: 8px;
+      border-radius: 8px;
+      background: #ecefea;
+      overflow: hidden;
+    }
+
+    .mini-bar span {
+      display: block;
+      height: 100%;
+      border-radius: 8px;
+      background: var(--violet);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfbfa;
+      min-height: 86px;
+    }
+
+    .metric-box strong {
+      display: block;
+      font-size: 20px;
+      margin-top: 7px;
+      overflow-wrap: anywhere;
+    }
+
+    .scenario {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .slider-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .evidence {
+      display: none;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+      color: var(--muted);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    body.show-evidence .evidence {
+      display: block;
+    }
+
+    .table-wrap {
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: white;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .footer {
+      padding: 24px 0 10px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1020px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .kpis, .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .funnel-row {
+        grid-template-columns: 1fr;
+      }
+
+      .dropoff {
+        text-align: left;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside>
+      <div class="brand">
+        <div class="brand-mark">GA4</div>
+        <div>
+          <h2>Funnel Analytics</h2>
+          <p class="small muted">Evidence-backed ecommerce opportunity dashboard</p>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Dashboard sections">
+        <a href="#overview"><span class="dot"></span>Overview</a>
+        <a href="#funnel"><span class="dot" style="background: var(--green)"></span>Funnel</a>
+        <a href="#opportunity"><span class="dot" style="background: var(--violet)"></span>Opportunity</a>
+        <a href="#experiment"><span class="dot" style="background: var(--amber)"></span>Experiment</a>
+      </nav>
+      <div class="controls" aria-label="Dashboard controls">
+        <label>
+          Segment search
+          <input id="segmentSearch" type="search" placeholder="google organic desktop">
+        </label>
+        <label>
+          Device filter
+          <select id="deviceFilter">
+            <option value="all">All devices</option>
+          </select>
+        </label>
+        <label>
+          Sort opportunities
+          <select id="sortMode">
+            <option value="estimated_revenue_opportunity">Revenue opportunity</option>
+            <option value="estimated_missed_conversions">Missed conversions</option>
+            <option value="conversion_rate_gap">Conversion gap</option>
+            <option value="eligible_sessions">Eligible sessions</option>
+          </select>
+        </label>
+        <div class="toggle-row">
+          <span class="small muted">Show evidence paths</span>
+          <input id="evidenceToggle" type="checkbox" aria-label="Show evidence source paths">
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <section id="overview" class="hero">
+        <div class="hero-meta">
+          <span class="chip">Source: GA4 BigQuery public sample</span>
+          <span class="chip" id="periodChip"></span>
+          <span class="chip">Generated by SQL/Python</span>
+        </div>
+        <h1>Where the ecommerce funnel loses intent, and which segment is worth investigating first.</h1>
+        <p class="muted">This dashboard is generated from deterministic metric evidence. Narrative labels and recommendations point back to the evidence packet instead of inventing numbers.</p>
+        <div class="grid kpis" id="kpiGrid"></div>
+      </section>
+
+      <section id="funnel" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Funnel Drop-Off</h2>
+            <p class="small muted">Session-level progression across ecommerce events.</p>
+          </div>
+          <span class="badge" id="topDropoffBadge"></span>
+        </div>
+        <div class="grid two-col">
+          <div class="panel panel-pad">
+            <div class="funnel" id="funnelChart"></div>
+          </div>
+          <div class="insight">
+            <h3>Interpretation</h3>
+            <p id="funnelNarrative"></p>
+            <p class="small muted">Potential causes are hypotheses only. Validating product-page content, CTA clarity, pricing cues, inventory visibility, and merchandising requires additional evidence.</p>
+            <div class="evidence">metric_evidence_packet.funnel</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="opportunity" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Segment Opportunity</h2>
+            <p class="small muted">Ranked by counterfactual revenue opportunity against the overall checkout-to-purchase benchmark.</p>
+          </div>
+          <span class="badge" id="segmentCountBadge"></span>
+        </div>
+        <div class="grid two-col">
+          <div class="panel panel-pad">
+            <div class="opportunity-list" id="opportunityList"></div>
+          </div>
+          <div class="panel panel-pad">
+            <h3 id="selectedSegmentTitle">Selected segment</h3>
+            <p class="small muted" id="selectedSegmentSubtitle"></p>
+            <div class="detail-grid" id="segmentDetails"></div>
+            <div class="scenario">
+              <div class="slider-line">
+                <h3>Target conversion scenario</h3>
+                <span class="badge" id="targetRateLabel"></span>
+              </div>
+              <input id="targetRate" type="range" min="0" max="100" step="0.1">
+              <div class="detail-grid" id="scenarioDetails"></div>
+            </div>
+            <div class="evidence">metric_evidence_packet.opportunity and ga4_funnel_portfolio.opportunity_inputs</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="experiment" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Experiment Feasibility</h2>
+            <p class="small muted">The sample-size estimate is a traffic check, not an automatic recommendation to launch.</p>
+          </div>
+          <span class="badge">Traffic sufficiency warning</span>
+        </div>
+        <div class="grid two-col">
+          <div class="panel panel-pad">
+            <div class="detail-grid" id="experimentDetails"></div>
+          </div>
+          <div class="insight">
+            <h3>Decision note</h3>
+            <p id="experimentNarrative"></p>
+            <p class="small muted" id="experimentNextStep"></p>
+            <div class="evidence">metric_evidence_packet.experiment_feasibility</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>Top Opportunity Table</h2>
+            <p class="small muted">Filtered by the controls in the left rail.</p>
+          </div>
+        </div>
+        <div class="panel table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Segment</th>
+                <th>CVR</th>
+                <th>Benchmark</th>
+                <th>Gap</th>
+                <th>Missed conv.</th>
+                <th>Revenue opp.</th>
+              </tr>
+            </thead>
+            <tbody id="opportunityTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="footer small">Generated from outputs/metric_evidence_packet.json and deterministic SQL/Python exports. Public GA4 sample data is obfuscated, so placeholder values such as &lt;Other&gt; or (data deleted) may appear.</p>
+    </main>
+  </div>
+
+  <script id="dashboard-data" type="application/json">{"packet": {"project": {"analysis_period_label": "20201101 to 20210131", "data_source": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*", "generated_by": "SQL/Python", "event_count": 4295584, "user_count": 270154, "day_count": 92, "min_event_date": "20201101", "max_event_date": "20210131"}, "funnel": {"funnel_steps": [{"step": "session", "sessions": 360129, "next_step": "view_item", "next_step_sessions": 77020, "step_conversion_rate": 0.2138678084797392, "dropoff_rate": 0.7861321915202608}, {"step": "view_item", "sessions": 77020, "next_step": "add_to_cart", "next_step_sessions": 15188, "step_conversion_rate": 0.19719553362762918, "dropoff_rate": 0.8028044663723708}, {"step": "add_to_cart", "sessions": 15188, "next_step": "begin_checkout", "next_step_sessions": 11106, "step_conversion_rate": 0.7312351856728997, "dropoff_rate": 0.2687648143271003}, {"step": "begin_checkout", "sessions": 11106, "next_step": "purchase", "next_step_sessions": 4848, "step_conversion_rate": 0.4365207995678012, "dropoff_rate": 0.5634792004321988}, {"step": "purchase", "sessions": 4848, "next_step": null, "next_step_sessions": null, "step_conversion_rate": null, "dropoff_rate": null}], "top_dropoff_step": "view_item_to_add_to_cart", "top_dropoff_rate": 0.8028044663723708}, "opportunity": {"segment_name": "google / organic / desktop", "eligible_sessions": 65142, "segment_conversion_rate": 0.38682432432432434, "benchmark_name": "overall checkout-to-purchase conversion rate", "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.04969647524347687, "average_order_value": 75.74381368267831, "estimated_missed_conversions": 88.26094003241492, "estimated_revenue_opportunity": 6685.220197273279, "begin_checkout_sessions": 1776, "purchase_sessions": 687, "revenue": 52036.0}, "experiment_feasibility": {"baseline_conversion_rate": 0.38682432432432434, "mde_relative_lift": 0.1, "alpha": 0.05, "power": 0.8, "required_sample_per_variant": 2530, "daily_eligible_users": 20, "estimated_test_duration_days": 253, "feasibility_interpretation": "The estimated test duration is long because the selected opportunity segment has limited eligible checkout traffic. Treat this as a traffic sufficiency warning, not as a launch-ready A/B test recommendation.", "recommended_next_step": "Expand the eligible population, combine similar segments, choose a larger practical effect size, or use a quasi-experimental design before committing to a randomized test."}, "qa": {"metric_definitions_reviewed": true, "ga4_event_taxonomy_reviewed": true, "utm_channel_grouping_reviewed": true, "event_coverage": [{"event_name": "view_item", "event_count": "386068", "user_count": "61252", "session_count": "77020"}, {"event_name": "session_start", "event_count": "354970", "user_count": "267116", "session_count": "354857"}, {"event_name": "add_to_cart", "event_count": "58543", "user_count": "12545", "session_count": "15188"}, {"event_name": "begin_checkout", "event_count": "38757", "user_count": "9715", "session_count": "11106"}, {"event_name": "purchase", "event_count": "5692", "user_count": "4419", "session_count": "4848"}], "notes": ["Metrics are generated from deterministic BigQuery SQL exports and Python calculations.", "Public GA4 sample data is obfuscated; null, empty, or placeholder traffic fields may appear.", "Experiment feasibility uses checkout entrants for the selected opportunity segment as the eligible population.", "MDE relative lift is an analyst-configured planning assumption: 0.1.", "Long estimated test durations should be interpreted as traffic sufficiency warnings rather than launch-ready experiment recommendations."]}}, "opportunities": [{"user_source": "(data deleted)", "user_medium": "(data deleted)", "device_category": "mobile", "eligible_sessions": 8899.0, "begin_checkout_sessions": 470.0, "purchase_sessions": 283.0, "revenue": 20305.0, "segment_conversion_rate": 0.6021276595744681, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.1656068600066669, "average_order_value": 71.74911660777386, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "(data deleted) / (data deleted) / mobile"}, {"user_source": "<Other>", "user_medium": "(data deleted)", "device_category": "desktop", "eligible_sessions": 238.0, "begin_checkout_sessions": 13.0, "purchase_sessions": 5.0, "revenue": 259.0, "segment_conversion_rate": 0.38461538461538464, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.05190541495241657, "average_order_value": 51.8, "estimated_missed_conversions": 0.6747703943814154, "estimated_revenue_opportunity": 34.95310642895731, "segment_name": "<Other> / (data deleted) / desktop"}, {"user_source": "<Other>", "user_medium": "(data deleted)", "device_category": "mobile", "eligible_sessions": 149.0, "begin_checkout_sessions": 6.0, "purchase_sessions": 4.0, "revenue": 138.0, "segment_conversion_rate": 0.6666666666666666, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.23014586709886542, "average_order_value": 34.5, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "<Other> / (data deleted) / mobile"}, {"user_source": "(data deleted)", "user_medium": "(data deleted)", "device_category": "desktop", "eligible_sessions": 12855.0, "begin_checkout_sessions": 689.0, "purchase_sessions": 399.0, "revenue": 28932.0, "segment_conversion_rate": 0.579100145137881, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.14257934557007979, "average_order_value": 72.51127819548873, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "(data deleted) / (data deleted) / desktop"}, {"user_source": "(data deleted)", "user_medium": "(data deleted)", "device_category": "tablet", "eligible_sessions": 479.0, "begin_checkout_sessions": 25.0, "purchase_sessions": 16.0, "revenue": 827.0, "segment_conversion_rate": 0.64, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.2034792004321988, "average_order_value": 51.6875, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "(data deleted) / (data deleted) / tablet"}, {"user_source": "(direct)", "user_medium": "(none)", "device_category": "tablet", "eligible_sessions": 1840.0, "begin_checkout_sessions": 57.0, "purchase_sessions": 25.0, "revenue": 1386.0, "segment_conversion_rate": 0.43859649122807015, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.0020756916602689413, "average_order_value": 55.44, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "(direct) / (none) / tablet"}, {"user_source": "(direct)", "user_medium": "(none)", "device_category": "mobile", "eligible_sessions": 32968.0, "begin_checkout_sessions": 994.0, "purchase_sessions": 435.0, "revenue": 32451.0, "segment_conversion_rate": 0.43762575452716296, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.001104954959361748, "average_order_value": 74.6, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "(direct) / (none) / mobile"}, {"user_source": "(direct)", "user_medium": "(none)", "device_category": "desktop", "eligible_sessions": 48651.0, "begin_checkout_sessions": 1464.0, "purchase_sessions": 619.0, "revenue": 45813.0, "segment_conversion_rate": 0.4228142076502732, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.013706591917527988, "average_order_value": 74.01130856219709, "estimated_missed_conversions": 20.066450567260976, "estimated_revenue_opportunity": 1485.1442646816267, "segment_name": "(direct) / (none) / desktop"}, {"user_source": "<Other>", "user_medium": "<Other>", "device_category": "mobile", "eligible_sessions": 20692.0, "begin_checkout_sessions": 548.0, "purchase_sessions": 203.0, "revenue": 14228.0, "segment_conversion_rate": 0.3704379562043796, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.06608284336342163, "average_order_value": 70.08866995073892, "estimated_missed_conversions": 36.213398163155055, "estimated_revenue_opportunity": 2538.1489116520697, "segment_name": "<Other> / <Other> / mobile"}, {"user_source": "<Other>", "user_medium": "<Other>", "device_category": "tablet", "eligible_sessions": 1195.0, "begin_checkout_sessions": 32.0, "purchase_sessions": 14.0, "revenue": 362.0, "segment_conversion_rate": 0.4375, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.0009792004321987902, "average_order_value": 25.857142857142858, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "<Other> / <Other> / tablet"}, {"user_source": "<Other>", "user_medium": "<Other>", "device_category": "desktop", "eligible_sessions": 30170.0, "begin_checkout_sessions": 803.0, "purchase_sessions": 289.0, "revenue": 20880.0, "segment_conversion_rate": 0.35990037359900373, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.07662042596879748, "average_order_value": 72.24913494809688, "estimated_missed_conversions": 61.52620205294438, "estimated_revenue_opportunity": 4445.214874967053, "segment_name": "<Other> / <Other> / desktop"}, {"user_source": "google", "user_medium": "cpc", "device_category": "desktop", "eligible_sessions": 9119.0, "begin_checkout_sessions": 232.0, "purchase_sessions": 98.0, "revenue": 6038.0, "segment_conversion_rate": 0.4224137931034483, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.014107006464352922, "average_order_value": 61.61224489795919, "estimated_missed_conversions": 3.272825499729878, "estimated_revenue_opportunity": 201.6461261976429, "segment_name": "google / cpc / desktop"}, {"user_source": "google", "user_medium": "cpc", "device_category": "mobile", "eligible_sessions": 6136.0, "begin_checkout_sessions": 148.0, "purchase_sessions": 52.0, "revenue": 2846.0, "segment_conversion_rate": 0.35135135135135137, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.08516944821644984, "average_order_value": 54.73076923076923, "estimated_missed_conversions": 12.605078336034577, "estimated_revenue_opportunity": 689.8856335452771, "segment_name": "google / cpc / mobile"}, {"user_source": "google", "user_medium": "cpc", "device_category": "tablet", "eligible_sessions": 362.0, "begin_checkout_sessions": 11.0, "purchase_sessions": 3.0, "revenue": 172.0, "segment_conversion_rate": 0.2727272727272727, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.1637935268405285, "average_order_value": 57.333333333333336, "estimated_missed_conversions": 1.8017287952458134, "estimated_revenue_opportunity": 103.2991175940933, "segment_name": "google / cpc / tablet"}, {"user_source": "google", "user_medium": "organic", "device_category": "mobile", "eligible_sessions": 45045.0, "begin_checkout_sessions": 1324.0, "purchase_sessions": 542.0, "revenue": 41982.0, "segment_conversion_rate": 0.4093655589123867, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.027155240655414525, "average_order_value": 77.45756457564576, "estimated_missed_conversions": 35.95353862776883, "estimated_revenue_opportunity": 2784.8735399833786, "segment_name": "google / organic / mobile"}, {"user_source": "google", "user_medium": "organic", "device_category": "desktop", "eligible_sessions": 65142.0, "begin_checkout_sessions": 1776.0, "purchase_sessions": 687.0, "revenue": 52036.0, "segment_conversion_rate": 0.38682432432432434, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.04969647524347687, "average_order_value": 75.74381368267831, "estimated_missed_conversions": 88.26094003241492, "estimated_revenue_opportunity": 6685.220197273279, "segment_name": "google / organic / desktop"}, {"user_source": "google", "user_medium": "organic", "device_category": "tablet", "eligible_sessions": 2491.0, "begin_checkout_sessions": 66.0, "purchase_sessions": 21.0, "revenue": 1757.0, "segment_conversion_rate": 0.3181818181818182, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.11833898138598303, "average_order_value": 83.66666666666667, "estimated_missed_conversions": 7.8103727714748805, "estimated_revenue_opportunity": 653.4678552133984, "segment_name": "google / organic / tablet"}, {"user_source": "<Other>", "user_medium": "organic", "device_category": "tablet", "eligible_sessions": 232.0, "begin_checkout_sessions": 5.0, "purchase_sessions": 2.0, "revenue": 28.0, "segment_conversion_rate": 0.4, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.03652079956780119, "average_order_value": 14.0, "estimated_missed_conversions": 0.18260399783900594, "estimated_revenue_opportunity": 2.556455969746083, "segment_name": "<Other> / organic / tablet"}, {"user_source": "<Other>", "user_medium": "organic", "device_category": "mobile", "eligible_sessions": 4005.0, "begin_checkout_sessions": 101.0, "purchase_sessions": 38.0, "revenue": 3196.0, "segment_conversion_rate": 0.37623762376237624, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.06028317580542497, "average_order_value": 84.10526315789474, "estimated_missed_conversions": 6.0886007563479225, "estimated_revenue_opportunity": 512.083368875999, "segment_name": "<Other> / organic / mobile"}, {"user_source": "<Other>", "user_medium": "organic", "device_category": "desktop", "eligible_sessions": 5926.0, "begin_checkout_sessions": 139.0, "purchase_sessions": 57.0, "revenue": 5008.0, "segment_conversion_rate": 0.41007194244604317, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.02644885712175804, "average_order_value": 87.85964912280701, "estimated_missed_conversions": 3.676391139924368, "estimated_revenue_opportunity": 323.00643559195146, "segment_name": "<Other> / organic / desktop"}, {"user_source": "shop.googlemerchandisestore.com", "user_medium": "referral", "device_category": "desktop", "eligible_sessions": 16690.0, "begin_checkout_sessions": 627.0, "purchase_sessions": 316.0, "revenue": 25551.0, "segment_conversion_rate": 0.5039872408293461, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.06746644126154488, "average_order_value": 80.85759493670886, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "shop.googlemerchandisestore.com / referral / desktop"}, {"user_source": "shop.googlemerchandisestore.com", "user_medium": "referral", "device_category": "tablet", "eligible_sessions": 650.0, "begin_checkout_sessions": 27.0, "purchase_sessions": 15.0, "revenue": 1250.0, "segment_conversion_rate": 0.5555555555555556, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.11903475598775437, "average_order_value": 83.33333333333333, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "shop.googlemerchandisestore.com / referral / tablet"}, {"user_source": "<Other>", "user_medium": "referral", "device_category": "desktop", "eligible_sessions": 20147.0, "begin_checkout_sessions": 649.0, "purchase_sessions": 279.0, "revenue": 24298.0, "segment_conversion_rate": 0.42989214175654855, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.006628657811252658, "average_order_value": 87.08960573476702, "estimated_missed_conversions": 4.301998919502975, "estimated_revenue_opportunity": 374.65938977090786, "segment_name": "<Other> / referral / desktop"}, {"user_source": "(data deleted)", "user_medium": "referral", "device_category": "mobile", "eligible_sessions": 1.0, "begin_checkout_sessions": 1.0, "purchase_sessions": 0.0, "revenue": 0.0, "segment_conversion_rate": 0.0, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": 0.4365207995678012, "average_order_value": null, "estimated_missed_conversions": 0.4365207995678012, "estimated_revenue_opportunity": null, "segment_name": "(data deleted) / referral / mobile"}, {"user_source": "shop.googlemerchandisestore.com", "user_medium": "referral", "device_category": "mobile", "eligible_sessions": 11509.0, "begin_checkout_sessions": 481.0, "purchase_sessions": 254.0, "revenue": 19720.0, "segment_conversion_rate": 0.5280665280665281, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.09154572849872689, "average_order_value": 77.63779527559055, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "shop.googlemerchandisestore.com / referral / mobile"}, {"user_source": "<Other>", "user_medium": "referral", "device_category": "mobile", "eligible_sessions": 13781.0, "begin_checkout_sessions": 401.0, "purchase_sessions": 184.0, "revenue": 11902.0, "segment_conversion_rate": 0.45885286783042395, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.02233206826262274, "average_order_value": 64.68478260869566, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "<Other> / referral / mobile"}, {"user_source": "<Other>", "user_medium": "referral", "device_category": "tablet", "eligible_sessions": 744.0, "begin_checkout_sessions": 17.0, "purchase_sessions": 8.0, "revenue": 800.0, "segment_conversion_rate": 0.47058823529411764, "benchmark_conversion_rate": 0.4365207995678012, "conversion_rate_gap": -0.03406743572631643, "average_order_value": 100.0, "estimated_missed_conversions": 0.0, "estimated_revenue_opportunity": 0.0, "segment_name": "<Other> / referral / tablet"}]}</script>
+  <script>
+    const data = JSON.parse(document.getElementById('dashboard-data').textContent);
+    const packet = data.packet;
+    const opportunities = data.opportunities;
+
+    const fmtInt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+    const fmtOne = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 });
+    const fmtMoney = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    const pct = (value) => value == null ? 'n/a' : `${fmtOne.format(value * 100)}%`;
+    const num = (value) => value == null ? 'n/a' : fmtInt.format(value);
+    const money = (value) => value == null ? 'n/a' : fmtMoney.format(value);
+
+    let selectedSegment = packet.opportunity.segment_name;
+
+    function metricCard(label, value, badge, source) {
+      return `
+        <div class="panel panel-pad kpi">
+          <div class="kpi-top">
+            <h3>${label}</h3>
+            <span class="badge">${badge}</span>
+          </div>
+          <div class="kpi-value">${value}</div>
+          <div class="evidence">${source}</div>
+        </div>
+      `;
+    }
+
+    function renderKpis() {
+      const p = packet.project;
+      const f = packet.funnel;
+      const o = packet.opportunity;
+      document.getElementById('periodChip').textContent = `Period: ${p.analysis_period_label}`;
+      document.getElementById('kpiGrid').innerHTML = [
+        metricCard('Events analyzed', num(p.event_count), 'Scale', 'metric_evidence_packet.project.event_count'),
+        metricCard('Top drop-off', f.top_dropoff_step.replaceAll('_', ' -> '), pct(f.top_dropoff_rate), 'metric_evidence_packet.funnel.top_dropoff_step'),
+        metricCard('Top opportunity', o.segment_name, 'Segment', 'metric_evidence_packet.opportunity.segment_name'),
+        metricCard('Revenue opportunity', money(o.estimated_revenue_opportunity), `${fmtOne.format(o.estimated_missed_conversions)} missed conv.`, 'metric_evidence_packet.opportunity.estimated_revenue_opportunity')
+      ].join('');
+      document.getElementById('topDropoffBadge').textContent = `${pct(f.top_dropoff_rate)} drop-off`;
+    }
+
+    function renderFunnel() {
+      const steps = packet.funnel.funnel_steps;
+      const maxSessions = Math.max(...steps.map(step => step.sessions || 0));
+      document.getElementById('funnelChart').innerHTML = steps.map(step => {
+        const width = ((step.sessions || 0) / maxSessions) * 100;
+        return `
+          <div class="funnel-row">
+            <div>
+              <strong>${step.step.replaceAll('_', ' ')}</strong>
+              <div class="small muted">${num(step.sessions)} sessions</div>
+            </div>
+            <div class="bar-track" title="${num(step.sessions)} sessions">
+              <div class="bar-fill" style="width: ${width}%"></div>
+            </div>
+            <div class="dropoff">${step.dropoff_rate == null ? '' : pct(step.dropoff_rate)}</div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('funnelNarrative').textContent =
+        `The largest observed break is ${packet.funnel.top_dropoff_step.replaceAll('_', ' -> ')}, where ${pct(packet.funnel.top_dropoff_rate)} of sessions fail to reach the next funnel step.`;
+    }
+
+    function currentFilteredOpportunities() {
+      const query = document.getElementById('segmentSearch').value.trim().toLowerCase();
+      const device = document.getElementById('deviceFilter').value;
+      const sort = document.getElementById('sortMode').value;
+      return opportunities
+        .filter(row => device === 'all' || row.device_category === device)
+        .filter(row => !query || row.segment_name.toLowerCase().includes(query))
+        .sort((a, b) => (b[sort] || 0) - (a[sort] || 0));
+    }
+
+    function renderDeviceOptions() {
+      const devices = Array.from(new Set(opportunities.map(row => row.device_category))).sort();
+      document.getElementById('deviceFilter').innerHTML = '<option value="all">All devices</option>' +
+        devices.map(device => `<option value="${device}">${device}</option>`).join('');
+    }
+
+    function renderOpportunityList() {
+      const rows = currentFilteredOpportunities();
+      const maxRevenue = Math.max(...opportunities.map(row => row.estimated_revenue_opportunity || 0), 1);
+      if (!rows.some(row => row.segment_name === selectedSegment) && rows[0]) {
+        selectedSegment = rows[0].segment_name;
+      }
+      document.getElementById('segmentCountBadge').textContent = `${rows.length} segments`;
+      document.getElementById('opportunityList').innerHTML = rows.slice(0, 18).map(row => {
+        const active = row.segment_name === selectedSegment ? ' active' : '';
+        const width = ((row.estimated_revenue_opportunity || 0) / maxRevenue) * 100;
+        return `
+          <button class="segment-row${active}" data-segment="${row.segment_name}">
+            <div class="segment-title">
+              <strong>${row.segment_name}</strong>
+              <span class="badge">${money(row.estimated_revenue_opportunity)}</span>
+            </div>
+            <div class="mini-bar"><span style="width: ${width}%"></span></div>
+            <div class="small muted">CVR ${pct(row.segment_conversion_rate)} vs benchmark ${pct(row.benchmark_conversion_rate)} · ${fmtOne.format(row.estimated_missed_conversions || 0)} missed conversions</div>
+          </button>
+        `;
+      }).join('');
+      document.querySelectorAll('.segment-row').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedSegment = button.dataset.segment;
+          renderOpportunityList();
+          renderSelectedSegment();
+          renderOpportunityTable();
+        });
+      });
+      renderSelectedSegment();
+      renderOpportunityTable();
+    }
+
+    function selectedRow() {
+      return opportunities.find(row => row.segment_name === selectedSegment) || opportunities[0];
+    }
+
+    function metricBox(label, value, source) {
+      return `<div class="metric-box"><span class="small muted">${label}</span><strong>${value}</strong><div class="evidence">${source}</div></div>`;
+    }
+
+    function renderSelectedSegment() {
+      const row = selectedRow();
+      if (!row) return;
+      document.getElementById('selectedSegmentTitle').textContent = row.segment_name;
+      document.getElementById('selectedSegmentSubtitle').textContent = `${num(row.eligible_sessions)} eligible sessions · ${num(row.begin_checkout_sessions)} checkout entrants · ${num(row.purchase_sessions)} purchases`;
+      document.getElementById('segmentDetails').innerHTML = [
+        metricBox('Segment CVR', pct(row.segment_conversion_rate), 'segment_conversion_rate'),
+        metricBox('Benchmark CVR', pct(row.benchmark_conversion_rate), 'benchmark_conversion_rate'),
+        metricBox('Conversion gap', pct(row.conversion_rate_gap), 'conversion_rate_gap'),
+        metricBox('Revenue opportunity', money(row.estimated_revenue_opportunity), 'estimated_revenue_opportunity')
+      ].join('');
+
+      const slider = document.getElementById('targetRate');
+      const min = Math.max(0, (row.segment_conversion_rate || 0) * 100);
+      const max = Math.min(95, Math.max((row.benchmark_conversion_rate || 0) * 100 + 8, min + 2));
+      slider.min = min.toFixed(1);
+      slider.max = max.toFixed(1);
+      if (!slider.value || Number(slider.value) < min || Number(slider.value) > max) {
+        slider.value = ((row.benchmark_conversion_rate || row.segment_conversion_rate || 0) * 100).toFixed(1);
+      }
+      renderScenario();
+    }
+
+    function renderScenario() {
+      const row = selectedRow();
+      const target = Number(document.getElementById('targetRate').value) / 100;
+      const gap = Math.max(0, target - (row.segment_conversion_rate || 0));
+      const missed = (row.begin_checkout_sessions || 0) * gap;
+      const revenue = missed * (row.average_order_value || 0);
+      document.getElementById('targetRateLabel').textContent = `${pct(target)} target`;
+      document.getElementById('scenarioDetails').innerHTML = [
+        metricBox('Scenario missed conversions', fmtOne.format(missed), 'derived from selected target rate'),
+        metricBox('Scenario revenue opportunity', money(revenue), 'derived from selected target rate')
+      ].join('');
+    }
+
+    function renderOpportunityTable() {
+      const rows = currentFilteredOpportunities().slice(0, 12);
+      document.getElementById('opportunityTable').innerHTML = rows.map(row => `
+        <tr>
+          <td>${row.segment_name}</td>
+          <td>${pct(row.segment_conversion_rate)}</td>
+          <td>${pct(row.benchmark_conversion_rate)}</td>
+          <td>${pct(row.conversion_rate_gap)}</td>
+          <td>${fmtOne.format(row.estimated_missed_conversions || 0)}</td>
+          <td>${money(row.estimated_revenue_opportunity)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderExperiment() {
+      const exp = packet.experiment_feasibility;
+      document.getElementById('experimentDetails').innerHTML = [
+        metricBox('Baseline CVR', pct(exp.baseline_conversion_rate), 'baseline_conversion_rate'),
+        metricBox('MDE relative lift', pct(exp.mde_relative_lift), 'mde_relative_lift'),
+        metricBox('Sample per variant', num(exp.required_sample_per_variant), 'required_sample_per_variant'),
+        metricBox('Estimated duration', `${num(exp.estimated_test_duration_days)} days`, 'estimated_test_duration_days')
+      ].join('');
+      document.getElementById('experimentNarrative').textContent = exp.feasibility_interpretation;
+      document.getElementById('experimentNextStep').textContent = exp.recommended_next_step;
+    }
+
+    function bindControls() {
+      ['segmentSearch', 'deviceFilter', 'sortMode'].forEach(id => {
+        document.getElementById(id).addEventListener('input', renderOpportunityList);
+      });
+      document.getElementById('targetRate').addEventListener('input', renderScenario);
+      document.getElementById('evidenceToggle').addEventListener('change', (event) => {
+        document.body.classList.toggle('show-evidence', event.target.checked);
+      });
+    }
+
+    renderKpis();
+    renderFunnel();
+    renderDeviceOptions();
+    bindControls();
+    renderOpportunityList();
+    renderExperiment();
+  </script>
+</body>
+</html>
