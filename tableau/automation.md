@@ -1,6 +1,6 @@
 # Tableau Automation
 
-This project can automate Tableau datasource publishing after the metric evidence layer is generated.
+This project can automate Tableau datasource and workbook-template publishing after the metric evidence layer is generated.
 
 ## Supported Automation
 
@@ -8,7 +8,39 @@ This project can automate Tableau datasource publishing after the metric evidenc
 2. Convert those CSV files into a Tableau `.hyper` extract.
 3. Publish the `.hyper` datasource, or an existing workbook template, to Tableau Cloud or Tableau Server.
 
-The script does not generate visual dashboard layouts from scratch. For production-quality dashboards, create a Tableau workbook template once, connect it to the published datasource, then republish or refresh the datasource through this workflow.
+The script does not generate visual dashboard layouts from scratch. For production-quality dashboards, create a Tableau workbook template once, connect it to the generated data source or Hyper extract, then republish the finished workbook through this workflow.
+
+## End-To-End Delivery Modes
+
+### Local Portfolio Mode
+
+Use this when the reviewer will open files locally:
+
+```text
+BigQuery SQL -> evidence packet -> Tableau CSV/Hyper -> open ga4_funnel_dashboard.twbx in Tableau Desktop
+```
+
+Requirement:
+
+```text
+tableau/ga4_funnel_dashboard.twbx
+```
+
+### Tableau API Publish Mode
+
+Use this when the user has Tableau Cloud/Server API credentials:
+
+```text
+BigQuery SQL -> evidence packet -> Tableau CSV/Hyper -> publish existing workbook template to Tableau Cloud/Server
+```
+
+Requirements:
+
+- Tableau Personal Access Token
+- Tableau project write permission
+- Existing packaged workbook template at `tableau/ga4_funnel_dashboard.twbx`
+
+This mode can deliver a finished dashboard to Tableau Cloud/Server without manually uploading through the Tableau UI. It still requires the workbook template to exist first.
 
 ## Install Optional Tableau Dependencies
 
@@ -69,7 +101,7 @@ python src/publish_tableau.py --confirm-live-api
 
 ## Publish Workbook Template
 
-If you have a packaged Tableau workbook template:
+If you have a packaged Tableau workbook template, this is the end-to-end dashboard publish command:
 
 ```bash
 python src/publish_tableau.py \
@@ -77,6 +109,12 @@ python src/publish_tableau.py \
   --path tableau/ga4_funnel_dashboard.twbx \
   --name "GA4 Funnel Portfolio Dashboard" \
   --confirm-live-api
+```
+
+Expected result:
+
+```text
+The completed dashboard workbook is published to the configured Tableau Cloud/Server project.
 ```
 
 ## Evidence Rule

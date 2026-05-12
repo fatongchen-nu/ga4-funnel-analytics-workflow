@@ -76,7 +76,7 @@ Any executive memo, Tableau annotation, business recommendation, or experiment d
 
 This project intentionally avoids live commercial APIs for the AI layer. Memo generation uses `MockProvider` only. In a production environment, the provider interface could be swapped for a real LLM API, but this portfolio version remains local, reproducible, and evidence-constrained.
 
-Tableau publishing is optional and explicit. The Tableau publisher defaults to dry-run mode and requires `--confirm-live-api` before it contacts Tableau Cloud or Tableau Server.
+Tableau publishing is optional and explicit. The Tableau publisher defaults to dry-run mode and requires `--confirm-live-api` before it contacts Tableau Cloud or Tableau Server. With Tableau Cloud/Server API credentials and an existing Tableau workbook template, the workflow can publish a finished dashboard artifact; the API path is template-based rather than dashboard-authoring-from-scratch.
 
 ## Planned Workflow
 
@@ -106,6 +106,16 @@ The workbook should be created in Tableau Public or Tableau Desktop from the gen
 
 ```text
 tableau/workbook_manifest.md
+```
+
+Once that template exists, a user with Tableau Cloud/Server API credentials can run the publishing script to deliver the dashboard without manually re-uploading it through the Tableau UI:
+
+```bash
+python src/publish_tableau.py \
+  --publish-type workbook \
+  --path tableau/ga4_funnel_dashboard.twbx \
+  --name "GA4 Funnel Portfolio Dashboard" \
+  --confirm-live-api
 ```
 
 ## BigQuery Starting Point

@@ -15,6 +15,8 @@ Current project state:
 - Tableau Cloud/Server publishing automation is implemented.
 - A finished `.twbx` dashboard file still needs to be created in Tableau Public or Tableau Desktop.
 
+After `tableau/ga4_funnel_dashboard.twbx` exists, the Tableau API path can publish the finished dashboard directly to Tableau Cloud/Server.
+
 ## Required Data Sources
 
 Use the generated files:
@@ -31,6 +33,26 @@ Optional packaged extract:
 ```text
 tableau/ga4_funnel_portfolio.hyper
 ```
+
+## Template-Based API Delivery
+
+The Tableau API path requires this workbook template:
+
+```text
+tableau/ga4_funnel_dashboard.twbx
+```
+
+Once the template exists, a user with Tableau Cloud/Server credentials can publish it with:
+
+```bash
+python src/publish_tableau.py \
+  --publish-type workbook \
+  --path tableau/ga4_funnel_dashboard.twbx \
+  --name "GA4 Funnel Portfolio Dashboard" \
+  --confirm-live-api
+```
+
+This is the supported end-to-end automation path for a finished dashboard. The API publishes an existing workbook artifact; it does not create visual sheets and dashboard layouts from scratch.
 
 ## Required Dashboard Tabs
 
